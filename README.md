@@ -16,3 +16,26 @@ All the DSP-Code-Project is based on the controlSuite-package from Texas Instrum
 http://www.ti.com/tool/CONTROLSUITE
 One of the example-projects was copied, modified and further example-projects were combined in until this 
 firmware was created. 
+
+To get the script run in the fashion of autostart, i wrote a little shell-script for starting it : 
+
+autostart.sh:
+```
+  cd <location-of-binary-and-"songs"-folder>
+  ./<compiled-binary-from-autostart.c>
+```
+
+made this script executable 
+```
+chmod a+x autostart.sh
+```
+
+and then added it as a cronjob at startup: 
+```
+crontab -e
+```
+
+adding the following line : 
+```
+@reboot <absolute-path-to-autostart.sh>
+```
