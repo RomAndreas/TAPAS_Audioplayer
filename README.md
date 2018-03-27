@@ -32,10 +32,12 @@ chmod a+x autostart.sh
 
 and then added it as a cronjob at startup: 
 ```
-crontab -e
+root@DietPi:~# crontab -e
 ```
 
 adding the following line : 
 ```
 @reboot <absolute-path-to-autostart.sh>
 ```
+Now, the little Audioplayer-Demo starts directly after the Raspberry-Pi Zero has finished booting up 
+and can be controlled by two pushbuttons connected to the Pi.
