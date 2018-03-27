@@ -3,22 +3,28 @@
 #include <unistd.h>
 #include <wiringPi.h>
 #include <sys/wait.h>
+#include <inttypes.h>
 
 // declare pin numbers
 const int playBut =  26;	// BCM 26 (Pin 37)
 const int nextBut = 6;		// BCM 6 (Pin 31) 
-
 	
-const int debounce = 100; 	// debounxce-time in ms
-int state = 0x000; 
+const int debounce = 60; 	// debounxce-time in ms
+const int playDelay = 250; 	// delay between song start and control over stopping it
+uint32_t state = 0x000; 
 
-#define DEBUG
+// comment this in if you want to see the current state
+//#define DEBUG
 
 // read the play-button
 int playPressed(){
 	if(digitalRead(playBut) == 0){
-		delay(debounce); 
-		return 1; 
+		delay(debounce);
+		if(digitalRead(playBut) == 0){ 
+			return 1;
+		}else{
+			return 0; 
+		} 
 	}else{
 		delay(debounce); 
 		return 0; 
@@ -28,8 +34,12 @@ int playPressed(){
 // read the next-song button
 int nextPressed(){
 	if(digitalRead(nextBut) == 0){
-		delay(debounce); 
-		return 1; 
+		delay(debounce);
+		if(digitalRead(nextBut) == 0){
+			return 1; 
+		}else{
+			return 0; 
+		}
 	}else{
 		delay(debounce); 
 		return 0; 
@@ -79,7 +89,8 @@ int main(void){
                  			char *exArgs[2] = {"Kompletteinlesen", "./songs/song1.pcm"};
                  			execv ("./Kompletteinlesen", exArgs);
         			}else{
-					state = 0x012; 
+					state = 0x012;
+					delay(playDelay);  
 				} 
 				break;		
 				}
@@ -118,11 +129,12 @@ int main(void){
                                  childPID = fork();
   
                                  if(childPID == 0){
-                                         // this is the child that is playing the music  
-                                         char *exArgs[2] = {"Kompletteinlesen", "./songs/song2.pcm"};
-                                         execv ("./Kompletteinlesen", exArgs);
+                                        // this is the child that is playing the music  
+                                        char *exArgs[2] = {"Kompletteinlesen", "./songs/song2.pcm"};
+                                        execv ("./Kompletteinlesen", exArgs);
                                  }else{
-                                         state = 0x022;
+                                        state = 0x022;
+					delay(playDelay); 
                                  }
 				break;
                                 }
@@ -167,6 +179,7 @@ int main(void){
                                         execv ("./Kompletteinlesen", exArgs);
                                 }else{
                                         state = 0x032;
+					delay(playDelay); 
                                 }
 
                                 break;
@@ -212,6 +225,7 @@ int main(void){
                                         execv ("./Kompletteinlesen", exArgs);
                                 }else{
                                         state = 0x042;
+					delay(playDelay); 
                                 }		
                                 break;
                                 }
@@ -236,7 +250,7 @@ int main(void){
 			case 0x050:{	/* song 5 selected */
                                  if(nextPressed()){
                                          // choose next song
-                                         state = 0x060;
+                                         state = 0x010;
                                  }
                                  if(playPressed()){
                                          // play song
@@ -255,6 +269,7 @@ int main(void){
                                         execv ("./Kompletteinlesen", exArgs);
                                 }else{
                                         state = 0x052;
+					delay(playDelay); 
                                 }
                                 break;
                                 }
@@ -275,96 +290,9 @@ int main(void){
                                 break; 
                                 }
 
-			/*	ALL STATES FOR SONG NUMBER 6 */
-			case 0x060:{	/* song 6 selected */
-                                 if(nextPressed()){
-                                         // choose next song
-                                         state = 0x070;
-                                 }
-                                 if(playPressed()){
-                                         // play song
-                                         state = 0x061;
-                                 }
-                 		break; 
-			}
-                        case 0x061:{
-                                // play song number 6
-                                // fork the player in a child process
-                                childPID = fork();
-                                
-                                if(childPID == 0){
-                                        // this is the child that is playing the music  
-                                        char *exArgs[2] = {"Kompletteinlesen", "./songs/song6.pcm"};
-                                        execv ("./Kompletteinlesen", exArgs);
-                                }else{
-                                        state = 0x062;
-                                }
-                                break;
-                                }
-                        case 0x062:{
-                                // stop playing song number 6 
-                                if( waitpid(childPID,NULL,WNOHANG) == 0 ){
-                                        // song is running 
-                                        if(playPressed()){
-                                                // kill child
-                                                kill(childPID, SIGTERM);
-                                                // -> return to song 6
-                                                state = 0x060;
-                                        }           
-                                }else{      
-                                        printf("playing song 6 ready \n\r");
-                                        state = 0x060;
-                                }           
-                                break; 
-                                }
-
-			/*	ALL STATES FOR SONG NUMBER 7 */
-			case 0x070:{	/* song 7 selected */
-                                 if(nextPressed()){
-                                         // choose next song
-                                         state = 0x010;
-                                 }
-                                 if(playPressed()){
-                                         // play song
-                                         state = 0x071;
-                                 }
-				break; 
-			}
-                        case 0x071:{
-                                // play song number 7
-                                // fork the player in a child process
-                                childPID = fork();
-                                 
-                                if(childPID == 0){
-                                        // this is the child that is playing the music  
-                                        char *exArgs[2] = {"Kompletteinlesen", "./songs/song7.pcm"};
-                                        execv ("./Kompletteinlesen", exArgs);
-                                }else{
-                                        state = 0x072;
-                                }
-                                break;
-                                }
-                        case 0x072:{
-                                // stop playing song number 7 
-                                if( waitpid(childPID,NULL,WNOHANG) == 0 ){
-                                        // song is running 
-                                        if(playPressed()){
-                                                // kill child
-                                                kill(childPID, SIGTERM);
-                                                // -> return to song 7
-                                                state = 0x070;
-                                        }               
-                                }else{           
-                                        printf("playing song 7 ready \n\r");
-                                        state = 0x070;
-                                }               
-                                break; 
-                                }
-
-
 			default:{
 				printf("!!Statemachine-Error!!\n\r"); 
-				printf(" This should never be reached ... \n\r"); 
+				printf(" This should never be reached ... \n\r");  
 				break; 
 			}
 		}
