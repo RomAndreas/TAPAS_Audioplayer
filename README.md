@@ -8,24 +8,27 @@ The Raspberry Pi is set up with a dietpi-image as follows:
 1) format SD card
 2) download latest dietpi-image
 3) transfer the dietpi-image to the SD-card e.g. by using "Win32DiskImager"
-4) enable the spi-device of the raspberry through the following: 
-   a) log in to your raspberry pi
-   b) execute
-      ```
-      cd /DietPi
-      nano config.txt
-      ``` 
-      change the following from 
-      	```
-        #-------spi-------------
-	      dtparam=spi=off
-        ```
-	    to
-	      ```
-        #-------spi-------------
-	      dtparam=spi=on
-        ```
-      and save the changes
+4) enable the spi-device of the raspberry through the following:
+a) log in to your raspberry pi
+b) execute
+```
+cd /DietPi
+nano config.txt
+``` 
+change the following from 
+
+```
+#-------spi-------------
+dtparam=spi=off
+```
+
+to
+
+```
+#-------spi-------------
+dtparam=spi=on
+```
+and save the changes
 
 5) install the wiringPi-lib on your raspberry: 
     	```
