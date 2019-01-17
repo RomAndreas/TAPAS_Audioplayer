@@ -9,7 +9,9 @@ The Raspberry Pi is set up with a dietpi-image as follows:
 2) download latest dietpi-image
 3) transfer the dietpi-image to the SD-card e.g. by using "Win32DiskImager"
 4) enable the spi-device of the raspberry through the following:
+
 a) log in to your raspberry pi
+
 b) execute
 ```
 cd /DietPi
