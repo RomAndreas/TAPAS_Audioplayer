@@ -30,10 +30,10 @@ dtparam=spi=on
 ```
 and save the changes
 
-5) install the wiringPi-lib on your raspberry: 
-    	```
-      sudo apt-get install wiringpi
-      ```     
+5) install the wiringPi-lib on your raspberry:
+```
+sudo apt-get install wiringpi
+```     
      
 6) log off and prepare your audio-files
 
