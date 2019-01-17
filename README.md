@@ -2,7 +2,38 @@
 This project uses the SDI-TAPAS-Board from Siemens as a power amplifier. Together with a Raspberry Pi Zero, pcm audio files can be played back.
 
 You need to convert the songs to 16Bit unsigned pcm with a sampling-rate of 22,05kHz and copy it to the Raspberry Pi Zero 
-attached to the TAPAS-Board. The Raspberry Pi is set up with a dietpi-image. 
+attached to the TAPAS-Board. 
+The Raspberry Pi is set up with a dietpi-image as follows:
+
+1) format SD card
+2) download latest dietpi-image
+3) transfer the dietpi-image to the SD-card e.g. by using "Win32DiskImager"
+4) enable the spi-device of the raspberry through the following: 
+   a) log in to your raspberry pi
+   b) execute
+      ```
+      cd /DietPi
+      nano config.txt
+      ``` 
+      change the following from 
+      	```
+        #-------spi-------------
+	      dtparam=spi=off
+        ```
+	    to
+	      ```
+        #-------spi-------------
+	      dtparam=spi=on
+        ```
+      and save the changes
+
+5) install the wiringPi-lib on your raspberry: 
+    	```
+      sudo apt-get install wiringpi
+      ```     
+     
+6) log off and prepare your audio-files
+
 For audio file conversion, I did a two-step procedure. 
 1) normalize the audio file for maximum amplitude input (I used Audacity)
 2) convert the normalized file to pcm-format (I used ffmpeg)
