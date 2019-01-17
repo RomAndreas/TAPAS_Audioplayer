@@ -36,8 +36,14 @@ and save the changes
 ```
 sudo apt-get install wiringpi
 ```     
+
+6) check, if the installation of wiringpi has succeeded by executing 
+```
+gpio -v
+```
+If you get an output here, everything is okay.
      
-6) log off and prepare your audio-files
+7) log off and prepare your audio-files
 
 For audio file conversion, I did a two-step procedure. 
 1) normalize the audio file for maximum amplitude input (I used Audacity)
